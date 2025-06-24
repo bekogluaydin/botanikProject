@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "phonenumber_field", # Model de phonenumber field kullanbilmek için
     'botanik_core',
 ]
 
