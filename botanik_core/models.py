@@ -54,3 +54,15 @@ class AccessionRecord(models.Model):
     
     def __str__(self):
         return f"{self.accession_number} - {self.taxon_name}"
+    
+
+class SeedBankRecord(models.Model):
+    accession = models.ForeignKey('AccessionRecord', on_delete=models.PROTECT)
+    quantity_description = models.TextField(max_length=200)
+    storage_location = models.CharField(max_length=50)
+    storage_date = models.DateField()
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.accession.accession_number} - {self.accession.taxon_name} - Tohum Kaydı"
