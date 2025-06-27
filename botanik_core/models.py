@@ -66,3 +66,14 @@ class SeedBankRecord(models.Model):
 
     def __str__(self):
         return f"{self.accession.accession_number} - {self.accession.taxon_name} - Tohum Kaydı"
+    
+
+class HerbariumRecord(models.Model):
+    herbarium_number = models.CharField(max_length=50, unique=True) # proje isterlerinde her numuneye özel bir herbaryum no olup olmadığı yazmıyor. Aynı zamanda görsele baktığımızda örneğin 345 numaralı kayıt 1 kez var. Birden fazla var mı belli değil. Bu yüzden "unique=True" olarak belirttim.
+    accession = models.ForeignKey('AccessionRecord', on_delete=models.PROTECT) # Aksesyon Defter tablosu bitki adı, lokasyon, koordinat ve aksesyon no için
+    collector = models.ForeignKey('Collector', on_delete=models.PROTECT) # Toplayıcı tablosu  ad, kod ve no için.
+    photo = models.ImageField(upload_to='herbarium_photos/', default="", blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.accession.accession_number} - {self.herbarium_number}"

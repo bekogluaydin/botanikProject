@@ -118,6 +118,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Yüklenecek dosyalar(fotoğraf, pdf, docx vb.) için base path belirttik.
+MEDIA_ROOT = BASE_DIR / "uploads"
+
+# uploads klasörünü dışarıya açmak için takma ad belirledik. Buna gidildiğinde yukarıda ki "MEDIA_ROOT" çağrılacak yani uploads klasörü(path, dosya konumu) ve içi.
+MEDIA_URL = "/media/"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
