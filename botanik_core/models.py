@@ -77,3 +77,34 @@ class HerbariumRecord(models.Model):
 
     def __str__(self):
         return f"{self.accession.accession_number} - {self.herbarium_number}"
+    
+
+class GardenLocation(models.Model):
+    name = models.CharField(max_length=100)  # Örn: Merkez Ada
+    sub_location = models.CharField(max_length=100, blank=True, null=True)  # Örn: Üst Gölet
+
+    island_code = models.PositiveSmallIntegerField()  # Örn: 1
+    sub_code = models.CharField(max_length=10)  # Örn: ÜG (Üst Gölet), BB (Bataklık Bölümü)
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}; {self.sub_location or 'Alt Bölüm Yok'}"
+
+    @property #Python’da bir sınıf (class) içinde fonksiyon gibi çalışan ama dışarıdan alan gibi erişilen yapıdır. "kayit.name" ile ilgili kaydın tabloda ki name alanına erişebiliyoruz "kayit.location_code" da aynı mantıkla çalışıyor @property yazdığımızda. 
+    def location_code(self):
+        return f"{self.island_code}-{self.sub_code}"
+  
+
+class PlantStatusRecord(models.Model):
+    accession = models.ForeignKey('AccessionRecord', on_delete=models.CASCADE)
+    status_date = models.DateField()
+    garden_location = models.ForeignKey('GardenLocation', on_delete=models.PROTECT)
+    status = models.CharField(max_length=100)
+    vegetative_state = models.CharField(max_length=100, blank=True, null=True)
+    observation = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.accession.accession_number} - {self.status} ({self.status_date})"
