@@ -174,3 +174,11 @@ class UserPermission(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def view_tables_list(self): # Görebileceği tablolar için many-to-many ilişkisi kurulduğu için tek seferlik böyle bir kod yazdık. Her seferinde yazmamk adına. Tek yapılması gereken kayit.view_tables_list()
+        return ", ".join([table.name for table in self.can_view_tables.all()])
+    view_tables_list.short_description = "Görebileceği Tablolar"
+
+    def add_tables_list(self):
+        return ", ".join([table.name for table in self.can_add_tables.all()])
+    add_tables_list.short_description = "Kayıt Yapabileceği Tablolar"
