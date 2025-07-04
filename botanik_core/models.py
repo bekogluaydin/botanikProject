@@ -3,6 +3,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.conf import settings
 
 # Create your models here.
 
@@ -98,7 +99,7 @@ class GardenLocation(models.Model):
 
 
 class PlantStatusRecord(models.Model):
-    accession = models.ForeignKey('AccessionRecord', on_delete=models.CASCADE)
+    accession = models.ForeignKey('AccessionRecord', on_delete=models.PROTECT)
     status_date = models.DateField()
     garden_location = models.ForeignKey('GardenLocation', on_delete=models.PROTECT)
     status = models.CharField(max_length=100)
@@ -108,3 +109,68 @@ class PlantStatusRecord(models.Model):
 
     def __str__(self):
         return f"{self.accession.accession_number} ({self.accession.taxon_name}) - {self.status} ({self.status_date})"
+
+
+class TablePermissionArea(models.Model): # Veri tabanındaki tabloları temsil eder (örnek: Herbaryum, Tohum Bankası)
+    name = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "İzin Verilecek Tablo (TablePermissionArea)"
+        verbose_name_plural = "İzin Verilecek Tablolar (TablePermissionArea)"
+
+    def __str__(self):
+        return self.name
+
+
+class DeletionPermissionChoices(models.TextChoices):
+    NO = "no", "Hayır"
+    YES = "yes", "Evet"
+    WITH_APPROVAL = "with_approval", "Yönetici Onayıyla"
+
+
+class UserGroup(models.Model):
+    name = models.CharField(max_length=50, unique=True) # Örnek: "Sistem Yöneticisi"
+    code = models.CharField(max_length=20, unique=True) # Örnek: "ADMIN"
+    description = models.TextField(blank=True, null=True)
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Kullanıcı Grubu (UserGroup)"
+        verbose_name_plural = "Kullanıcı Grupları (UserGroup)"
+
+    def __str__(self):
+        return f"{self.name} - {self.code}"
+
+
+class UserPermission(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    is_active = models.BooleanField(default=True)
+
+    can_view_tables = models.ManyToManyField(
+        TablePermissionArea,
+        related_name="viewable_by_users",
+        blank=True
+    )
+    can_add_tables = models.ManyToManyField(
+        TablePermissionArea,
+        related_name="addable_by_users",
+        blank=True
+    )
+
+    deletion_permission = models.CharField(
+        max_length=20,
+        choices=DeletionPermissionChoices.choices,
+        default=DeletionPermissionChoices.NO
+    )
+
+    user_group = models.OneToOneField(UserGroup, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Kullanıcı Yetkisi (UserPermission)"
+        verbose_name_plural = "Kullanıcı Yetkileri (UserPermission)"
+
+    def __str__(self):
+        return self.user.username
