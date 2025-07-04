@@ -7,7 +7,10 @@ from .models import (
     SeedBankRecord,
     HerbariumRecord,
     GardenLocation,
-    PlantStatusRecord
+    PlantStatusRecord,
+    TablePermissionArea,
+    UserGroup,
+    UserPermission
     )
 
 
@@ -205,3 +208,61 @@ class PlantStatusRecordAdmin(admin.ModelAdmin):
     )
 
     autocomplete_fields = ("accession", "garden_location")
+
+
+@admin.register(TablePermissionArea)
+class TablePermissionAreaAdmin(admin.ModelAdmin):
+    list_display = ("name", "is_active")
+    search_fields = ("name",)
+    list_filter = ("is_active",)
+
+
+@admin.register(UserGroup)
+class UserGroupAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "code",
+        "is_active",
+        "created_at"
+    )
+
+    search_fields = (
+        "name",
+        "code",
+        "description"
+    )
+
+    list_filter = ("is_active",)
+
+
+@admin.register(UserPermission)
+class UserPermissionAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "view_tables_list",
+        "add_tables_list",
+        "deletion_permission",
+        "user_group",
+        "is_active"
+    )
+
+    search_fields = (
+        "user__username",
+        "view_tables_list",
+        "add_tables_list",
+        "deletion_permission",
+        "user_group__name"
+    )
+
+    list_filter = (
+        "deletion_permission",
+        "user_group__name",
+        "is_active"
+    )
+
+    autocomplete_fields = (
+        "user",
+        "user_group",
+        "can_view_tables",
+        "can_add_tables"
+    )
