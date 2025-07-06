@@ -8,6 +8,8 @@ from django.conf import settings
 # Create your models here.
 
 class Collector(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True)
+
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     code = models.CharField(max_length=20, unique=True)
