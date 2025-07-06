@@ -248,6 +248,7 @@ class UserPermissionAdmin(admin.ModelAdmin):
 
     search_fields = (
         "user__username",
+        "user__email",
         "view_tables_list",
         "add_tables_list",
         "deletion_permission",
