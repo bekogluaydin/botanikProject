@@ -15,6 +15,8 @@ class Collector(models.Model):
     email = models.EmailField(blank=False, null=False, unique=True)
     is_active = models.BooleanField(default=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"ID: {self.id} - {self.name} {self.surname} ({self.code})"
 
