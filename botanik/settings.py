@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = Path(__file__).parent # settings.py dosyasının bulunduğu klasörü (botanik/) verir
 
 
 # Quick-start development settings - unsuitable for production
@@ -54,6 +56,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'botanik.urls'
 
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
