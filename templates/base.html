@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Botanik Sistem{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Botanik Yönetim Sistemi</h1>
+        {% if user.is_authenticated %}
+            <p>Merhaba, {{ user.username }} | <a href="{% url 'logout' %}">Çıkış</a></p>
+        {% else %}
+            <p><a href="{% url 'login' %}">Giriş Yap</a></p>
+        {% endif %}
+        <hr>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
