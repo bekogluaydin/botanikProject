@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from django.contrib import messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,7 +58,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'botanik.urls'
 
 
-TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates") # View'lar için ekstra olarak bu klasörü de tara dedik.
+# BASE_DIR uygulamanın her zaman ana adresini verir.
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -124,6 +127,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Yüklenecek dosyalar(fotoğraf, pdf, docx vb.) için base path belirttik.
 MEDIA_ROOT = BASE_DIR / "uploads"
@@ -136,7 +142,15 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Redirect 
+# Redirect / Default login URL specified.
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "account:login"
-LOGIN_URL = "account:login"
+LOGOUT_REDIRECT_URL = "account:user_login"
+LOGIN_URL = "account:user_login"
+
+MESSAGE_TAGS = { # Default messages type class
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}
