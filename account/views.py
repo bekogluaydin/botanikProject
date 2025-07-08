@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from account.forms import CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm
-from botanik_core.models import UserGroup
+from botanik_core.models import TablePermissionArea, UserGroup
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -154,4 +154,13 @@ def user_group_delete(request, user_group_id):
     
     return render(request, "account/user_group/user_group_delete.html", {
         'user_group': get_user_group
+    })
+
+
+# Table Permission Area
+@login_required
+def table_permission_area_list(request):
+    table_permission_area_list = TablePermissionArea.objects.all()
+    return render(request, "account/table_permission_area/table_permission_area_list.html", {
+        "table_permissions": table_permission_area_list
     })
