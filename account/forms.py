@@ -3,6 +3,8 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import User
 
+from botanik_core.models import UserGroup
+
 class LoginUserForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         
@@ -53,3 +55,77 @@ class CustomUserPasswordChangeForm(PasswordChangeForm):
         self.fields["old_password"].widget = forms.widgets.PasswordInput(attrs={'class': 'form-control'})
         self.fields["new_password1"].widget = forms.widgets.PasswordInput(attrs={'class': 'form-control'})
         self.fields["new_password2"].widget = forms.widgets.PasswordInput(attrs={'class': 'form-control'})
+
+
+
+# User Group
+class UserGroupCreateForm(forms.ModelForm):
+    class Meta:
+        model = UserGroup # Kullanıclacak olan model tanımlandı.
+
+        #  fields = '__all__' # modeldeki tüm alanları ekler forma.
+        fields = [
+            "name", 
+            "code", 
+            "description", 
+            "is_active"
+        ] # modeldeki belirtilen alanları ekler forma
+
+        labels = {
+            'name': "Grup Adı",
+            'code': "Grup Kodu",
+            'description': "Grup Açıklaması",
+            'is_active': "Grup Aktif mi?",
+        }
+
+        widgets = {
+            "name": forms.TextInput(attrs={"class":"form-control"}),
+            "code": forms.TextInput(attrs={"class":"form-control"}),
+            "description": forms.Textarea(attrs={"class":"form-control", "cols": "40", "rows":"10"}),
+            "isActive": forms.CheckboxInput(attrs={"class":"form-check-input"})
+        }
+
+        error_messages = {
+            "name": {
+                "required":"Grup Adı Boş Olamaz!"
+            },
+            "code": {
+                "required":"Grup Kodu Boş Olamaz!"
+            },
+        }
+
+
+class UserGroupEditForm(forms.ModelForm):
+    class Meta:
+        model = UserGroup # Kullanıclacak olan model tanımlandı.
+
+        #  fields = '__all__' # modeldeki tüm alanları ekler forma.
+        fields = [
+            "name", 
+            "code", 
+            "description", 
+            "is_active"
+        ] # modeldeki belirtilen alanları ekler forma
+
+        labels = {
+            'name': "Grup Adı",
+            'code': "Grup Kodu",
+            'description': "Grup Açıklaması",
+            'is_active': "Grup Aktif mi?",
+        }
+
+        widgets = {
+            "name": forms.TextInput(attrs={"class":"form-control"}),
+            "code": forms.TextInput(attrs={"class":"form-control"}),
+            "description": forms.Textarea(attrs={"class":"form-control", "cols": "40", "rows":"10"}),
+            "isActive": forms.CheckboxInput(attrs={"class":"form-check-input"})
+        }
+
+        error_messages = {
+            "name": {
+                "required":"Grup Adı Boş Olamaz!"
+            },
+            "code": {
+                "required":"Grup Kodu Boş Olamaz!"
+            },
+        }
