@@ -170,7 +170,7 @@ class UserPermission(models.Model):
         default=DeletionPermissionChoices.NO
     )
 
-    user_group = models.OneToOneField(UserGroup, on_delete=models.PROTECT)
+    user_group = models.ForeignKey('UserGroup', on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = "Kullanıcı Yetkisi (UserPermission)"
