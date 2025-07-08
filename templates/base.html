@@ -1,22 +1,34 @@
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Botanik Sistem{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    {% block css_files %}{% endblock css_files %}
+
+    <title>{% block page_title %}{% endblock page_title %}| Botanik Yönetim Sistemi</title>
 </head>
 <body>
     <header>
-        <h1>Botanik Yönetim Sistemi</h1>
-        {% if user.is_authenticated %}
-            <p>Merhaba, {{ user.username }} | <a href="{% url 'logout' %}">Çıkış</a></p>
-        {% else %}
-            <p><a href="{% url 'login' %}">Giriş Yap</a></p>
-        {% endif %}
-        <hr>
+        <!--navbar-->
+        {% include 'partials/_nav.html' %}
     </header>
 
+    <!--messages-->
+   {% include "partials/_messages.html" %}
+
     <main>
-        {% block content %}{% endblock %}
+        <!--content-->
+        {% block content %}{% endblock content %}
+
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        {% block js_files %}{% endblock js_files %}
     </main>
 </body>
 </html>

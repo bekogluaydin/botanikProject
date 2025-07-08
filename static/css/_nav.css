@@ -1,0 +1,12 @@
+.list-group-item.active {
+    background-color: #645f5d !important; /* Arka plan rengi */
+    border-color: #000000 !important; /* Kenarlık rengi */
+    color: white !important; /* Yazı rengi */
+}
+
+.nav-link.active {
+    background-color: white !important;
+    border-color: goldenrod !important;
+    color: black !important;
+    border-radius: 5px;
+}
