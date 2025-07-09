@@ -1,0 +1,42 @@
+{% extends "account/base_account.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Kullanıcı Yetki Düzenle
+{% endblock page_title %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Kullanıcı Yetki Düzenle</h1>
+            <div class="row">
+
+                <div class="col-12">
+                    <p><strong>Yetkisi Düzenlenen Kullanıcı:</strong> {{ form.instance.user.get_full_name|default:form.instance.user.username }}</p>
+
+                    <form method="POST" enctype="multipart/form-data" novalidate >
+                        {% csrf_token %}
+
+                        {% include "partials/_form.html" %}
+
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                        {% comment %} <button href="{% url 'account:user_permissions_list' %}" class="btn btn-secondary">Geri</button> {% endcomment %}
+
+                    </form>
+
+                </div>
+
+            </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }}  {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}

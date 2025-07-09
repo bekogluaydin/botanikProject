@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from botanik_core.models import UserGroup
+from botanik_core.models import UserGroup, UserPermission
 
 class LoginUserForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -129,3 +129,80 @@ class UserGroupEditForm(forms.ModelForm):
                 "required":"Grup Kodu Boş Olamaz!"
             },
         }
+
+
+
+# User Permission
+class UserPermissionCreateForm(forms.ModelForm):
+    class Meta:
+        model = UserPermission
+
+        fields = [
+            "user",
+            "can_view_tables",
+            "can_add_tables",
+            "deletion_permission",
+            "user_group",
+            "is_active"
+        ]
+
+        labels = {
+            "user": "Kullanıcı",
+            "can_view_tables": "Görebileceği Tablolar",
+            "can_add_tables": "Kayıt Yapabileceği Tablolar",
+            "deletion_permission": "Silme Yetkisi",
+            "user_group": "Kullanıcı Grubu",
+            "is_active": "Aktif mi?",
+        }
+
+        widgets = {
+            "user": forms.Select(attrs={"class": "form-control"}),
+            "can_view_tables": forms.CheckboxSelectMultiple(),
+            "can_add_tables": forms.CheckboxSelectMultiple(),
+            "deletion_permission": forms.Select(attrs={"class": "form-select"}),
+            "user_group": forms.Select(attrs={"class": "form-select"}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+        error_messages = {
+            "user": {"required": "Kullanıcı seçilmelidir!"},
+            "user_group": {"required": "Kullanıcı grubu seçilmelidir!"},
+        }
+
+
+class UserPermissionEditForm(forms.ModelForm):
+    class Meta:
+        model = UserPermission
+        exclude = ['user']  # user alanı forma eklenmesin
+
+        fields = [
+            "can_view_tables",
+            "can_add_tables",
+            "deletion_permission",
+            "user_group",
+            "is_active"
+        ]
+
+        labels = {
+            "can_view_tables": "Görebileceği Tablolar",
+            "can_add_tables": "Kayıt Yapabileceği Tablolar",
+            "deletion_permission": "Silme Yetkisi",
+            "user_group": "Kullanıcı Grubu",
+            "is_active": "Aktif mi?",
+        }
+
+        widgets = {
+            "can_view_tables": forms.CheckboxSelectMultiple(),
+            "can_add_tables": forms.CheckboxSelectMultiple(),
+            "deletion_permission": forms.Select(attrs={"class": "form-select"}),
+            "user_group": forms.Select(attrs={"class": "form-select"}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+        error_messages = {
+            "user_group": {"required": "Kullanıcı grubu seçilmelidir!"},
+        }
+    
+    def clean_user(self):
+        # Değişikliğe izin verme, her zaman orijinal kullanıcıyı geri döndür
+        return self.instance.user

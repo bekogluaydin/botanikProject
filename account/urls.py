@@ -17,4 +17,9 @@ urlpatterns = [
 
     # Table Permission Area
     path("table-permission-area/", views.table_permission_area_list, name="table_permission_area_list"),
+
+    # User Permission
+    path("user-permissions/", views.user_permissions_list, name="user_permissions_list"),
+    path("user-permissions/create/", views.user_permissions_create, name="user_permissions_create"),
+    path('user-permissions/edit/<int:user_permissions_id>', views.user_permissions_edit, name='user_permissions_edit'),
 ]

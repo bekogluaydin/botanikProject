@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from account.forms import CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm
-from botanik_core.models import TablePermissionArea, UserGroup
+from account.forms import CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm, UserPermissionCreateForm, UserPermissionEditForm
+from botanik_core.models import TablePermissionArea, UserGroup, UserPermission
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -164,3 +164,47 @@ def table_permission_area_list(request):
     return render(request, "account/table_permission_area/table_permission_area_list.html", {
         "table_permissions": table_permission_area_list
     })
+
+
+
+# User Permission
+@login_required
+def user_permissions_list(request):
+    user_permissions_list = UserPermission.objects.all()
+    return render(request, "account/user_permission/list.html", {
+        "user_permissions": user_permissions_list
+    })
+
+
+@login_required
+def user_permissions_create(request):
+
+    if request.method == "POST":
+        form = UserPermissionCreateForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            return redirect("account:user_permissions_list")
+    else:
+        form = UserPermissionCreateForm()
+
+    return render(request, "account/user_permission/create.html", {"form": form})
+
+
+@login_required
+def user_permissions_edit(request, user_permissions_id):
+    get_user_permissions = get_object_or_404(UserPermission, pk=user_permissions_id)
+
+    if request.method == "POST":
+        form = UserPermissionEditForm(request.POST, instance=get_user_permissions) # ilk iki parametre formdan gelen, instance parametresi ise DB'den gelen. İkisi karşılaştırılır Formdan gelen hangi alanlarda farklılık varsa sadece onlar için form.save() çalışır. Değişmeyen bilgilerde güncelleme yapılmaz.
+        
+        if form.is_valid():
+            form.instance.user = get_user_permissions.user # user alanını tekrar set ediyoruz (her ihtimale karşı)
+            form.save()
+            return redirect("account:user_permissions_list")
+    else:
+        form = UserPermissionEditForm(instance=get_user_permissions)
+
+    return render(request, "account/user_permission/edit.html", {"form": form})
+
+
