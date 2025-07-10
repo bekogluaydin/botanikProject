@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from botanik_core.utils.permissions import has_permission_to_view, has_permission_to_add
 from django.urls import reverse
 
-from account.forms import CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm, UserPermissionCreateForm, UserPermissionEditForm
-from botanik_core.models import TablePermissionArea, UserGroup, UserPermission
+from account.forms import CollectorCreateForm, CollectorEditForm, CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm, UserPermissionCreateForm, UserPermissionEditForm
+from botanik_core.models import Collector, TablePermissionArea, UserGroup, UserPermission
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -208,3 +209,42 @@ def user_permissions_edit(request, user_permissions_id):
     return render(request, "account/user_permission/edit.html", {"form": form})
 
 
+# Collector
+@login_required
+def collector_list(request):
+    if not has_permission_to_view(request.user, "Collector"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
+    collectors = Collector.objects.all()
+    return render(request, "account/collector/list.html", {"collectors": collectors})
+
+
+@login_required
+def collector_create(request):
+    if not has_permission_to_add(request.user, "Collector"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
+    if request.method == "POST":
+        form = CollectorCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("account:collector_list")
+    else:
+        form = CollectorCreateForm()
+    return render(request, "account/collector/create.html", {"form": form})
+
+
+@login_required
+def collector_edit(request, collector_id):
+    if not has_permission_to_add(request.user, "Collector"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
+    collector = get_object_or_404(Collector, pk=collector_id)
+    form = CollectorEditForm(request.POST or None, instance=collector)
+    if form.is_valid():
+        form.save()
+        return redirect("account:collector_list")
+    return render(request, "account/collector/edit.html", {"form": form})

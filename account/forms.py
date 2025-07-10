@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from botanik_core.models import UserGroup, UserPermission
+from botanik_core.models import Collector, UserGroup, UserPermission
 
 class LoginUserForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -205,4 +205,70 @@ class UserPermissionEditForm(forms.ModelForm):
     
     def clean_user(self):
         # Değişikliğe izin verme, her zaman orijinal kullanıcıyı geri döndür
+        return self.instance.user
+    
+
+
+# Collector
+class CollectorCreateForm(forms.ModelForm):
+    class Meta:
+        model = Collector
+
+        fields = [
+            "user", 
+            "code",
+            "phone",
+            "is_active"
+        ]
+
+        labels = {
+            "user": "Kullanıcı",
+            "code": "Kodu",
+            "phone": "Telefon",
+            "is_active": "Aktif mi?",
+        }
+
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-control'}),
+            "code": forms.TextInput(attrs={"class": "form-control"}),
+            "phone": forms.TextInput(attrs={"class": "form-control"}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+        error_messages = {
+            "user": {"required": "Kullanıcı seçilmelidir!"},
+            "code": {"required": "Kullanıcı Kodu boş olamaz!"},
+        }
+
+
+class CollectorEditForm(forms.ModelForm):
+    class Meta:
+        model = Collector
+        exclude = ['user']  # user alanı forma eklenmesin
+
+        fields = [
+            "code",
+            "phone",
+            "is_active"
+        ]
+
+        labels = {
+            "code": "Kodu",
+            "phone": "Telefon",
+            "is_active": "Aktif mi?",
+        }
+
+        widgets = {
+            'code': forms.TextInput(attrs={'class': 'form-control'}),
+            "phone": forms.TextInput(attrs={"class": "form-control"}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+        error_messages = {
+            "user": {"required": "Kullanıcı seçilmelidir!"},
+            "code": {"required": "Kullanıcı Kodu boş olamaz!"},
+        }
+
+    def clean_user(self):
+        # Kullanıcı alanı disabled olduğu için POST'ta gelmez
         return self.instance.user

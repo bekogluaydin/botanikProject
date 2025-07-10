@@ -1,0 +1,60 @@
+{% extends "account/base_account.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Toplayıcılar Defteri
+{% endblock page_title %}   
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Toplayıcılar Defteri</h1>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <a href="{% url 'account:collector_create' %}">+ Toplayıcı Ekle</a>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı Adı</th>
+                                <th>Kod</th>
+                                <th>Telefon</th>
+                                <th>E-Posta</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for collector in collectors  %}
+
+                                <tr>
+                                    <td>{{collector.user.get_full_name|default:collector.user.username}}</td>
+                                    <td>{{ collector.code }}</td>
+                                    <td>{{ collector.phone }}</td>
+                                    <td>{{ collector.user.email }}</td>
+                                    <td>
+                                        <a href="{% url "account:collector_edit" collector.id %}" class="btn btn-primary btn-sm">Düzenle</a>
+                                        {% comment %} <a href="{% url "account:collector_delete" collector.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a> {% endcomment %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}
