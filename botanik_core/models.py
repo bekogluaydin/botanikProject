@@ -5,22 +5,29 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.conf import settings
 
-# Create your models here.
 
 class Collector(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True)
-
-    name = models.CharField(max_length=50)
-    surname = models.CharField(max_length=50)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     code = models.CharField(max_length=20, unique=True)
     phone = PhoneNumberField(blank=True, null=True)
-    email = models.EmailField(blank=False, null=False, unique=True)
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"ID: {self.id} - {self.name} {self.surname} ({self.code})"
+        return f"ID: {self.id} - {self.user.get_full_name()} ({self.code})"
+    
+    @property
+    def name(self):
+        return self.user.first_name
+
+    @property
+    def surname(self):
+        return self.user.last_name
+
+    @property
+    def email(self):
+        return self.user.email
 
 
 class AccessionRecord(models.Model):
