@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Aksesyon Defteri
+{% endblock page_title %}   
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Aksesyon Defteri</h1>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <a href="{% url 'accession_record:accession_create' %}">+ Aksesyon Defteri Kaytı Oluştur</a>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Aksesyon Numarası</th>
+                                <th>Bitkinin Adı</th>
+                                <th>Materyal Çeşidi</th>
+                                <th>Köken</th>
+                                <th>Lokasyon</th>
+                                <th>Koordinat</th>
+                                <th>Toplanma Tarihi</th>
+                                <th>Toplayıcı Adı</th>
+                                <th>Toplayıcı Kodu</th>
+                                <th>Toplayıcı Numarası</th>
+                                <th>Toplayıcı Notu</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records  %}
+
+                                <tr>
+                                    <td>{{ record.accession_number }}</td>
+                                    <td>{{ record.taxon_name }}</td>
+                                    <td>{{ record.material_type }}</td>
+                                    <td>{{ record.origin }}</td>
+                                    <td>{{ record.location }}</td>
+                                    <td>{{ record.coordinates }}</td>
+                                    <td>{{ record.collection_date }}</td>
+                                    <td>{{record.collector.user.get_full_name|default:record.collector.user.username}}</td>
+                                    <td>{{ record.collector.code }}</td>
+                                    <td>{{ record.collector.user.id }}</td>
+                                    <td>{{ record.note }}</td>
+                                    <td>
+                                        <a href="{% url "accession_record:accession_edit" record.id %}" class="btn btn-primary btn-sm">Düzenle</a>
+                                        <a href="{% url "accession_record:accession_delete" record.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}

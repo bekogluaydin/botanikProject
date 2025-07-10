@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "phonenumber_field", # Model de phonenumber field kullanbilmek için
     'botanik_core',
-    'account'
+    'account',
+    'accession_record',
 ]
 
 MIDDLEWARE = [
