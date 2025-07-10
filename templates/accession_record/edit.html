@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Aksesyon Defteri  Düzenle
+{% endblock page_title %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Aksesyon Defteri Düzenle</h1>
+            <div class="row">
+
+                <div class="col-12">
+                    <p><strong>Düzenlenen Aksesyon Defteri:</strong> {{ form.instance.accession_number}}</p>
+
+                    <form method="POST" enctype="multipart/form-data" novalidate >
+                        {% csrf_token %}
+
+                        {% include "partials/_form.html" %}
+
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                        <a class="btn btn-secondary" href="{% url 'accession_record:accession_list' %}">Geri</a>
+
+                    </form>
+
+                </div>
+
+            </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }}  {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}

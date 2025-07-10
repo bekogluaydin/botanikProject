@@ -35,7 +35,7 @@ class AccessionRecord(models.Model):
     taxon_name = models.CharField(max_length=100)
     material_type = models.CharField(max_length=50)
     origin = models.CharField(max_length=100)
-    location = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, blank=True, null=True)
     coordinates = models.CharField(max_length=50, blank=True, null=True)
     collection_date = models.DateField(blank=True, null=True)
     collector = models.ForeignKey('Collector', on_delete=models.PROTECT) # Collector her şekilde eklenmeli boş bırakılmamalı.Eğer Collector bilgisi yok ise sistemde varsayılan bir kullanıcı olmalı Collectoru belli olmayanlar o varsyılan kişiye atanmalı otomatik olarak.

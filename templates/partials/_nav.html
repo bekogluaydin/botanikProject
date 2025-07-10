@@ -19,7 +19,7 @@
 
             <ul class="navbar-nav me-auto">
 
-                
+                {% if user.is_authenticated %}    
                     <ul class="dropdown">
                         <li>
                             <button class="dropbtn">Yetki İşlemleri</button>
@@ -47,9 +47,13 @@
                         </li>
                     </ul>
 
-                    {% comment %} <li class="nav-item">
-                        <a href="{% url "list_course" %}" class="nav-link {% if request.resolver_match.url_name == 'list_course' %}active{% endif %}">Admin Course List</a>
-                    </li> {% endcomment %}
+                    {% if user|can_view_table:"AccessionRecord" %}
+                     <li class="nav-item">
+                        <a href="{% url "accession_record:accession_list" %}" class="nav-link {% if request.resolver_match.url_name == 'accession_list' %}active{% endif %}">Aksesyon Defteri</a>
+                    </li>
+                    {% endif %}
+                
+                {% endif %}
                 
 
 

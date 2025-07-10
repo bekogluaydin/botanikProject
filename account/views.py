@@ -159,7 +159,7 @@ def user_group_delete(request, user_group_id):
 
     if not has_permission_to_view(request.user, "UserGroup"):  # opsiyonel kontrol
         messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
-        return redirect("home")
+        return redirect("botanik_core:home_page")
     
     if not has_delete_permission(request.user):
         if has_delete_approval_required(request.user):
@@ -256,7 +256,7 @@ def user_permissions_delete(request, user_permissions_id):
 
     if not has_permission_to_view(request.user, "UserPermission"):  # opsiyonel kontrol
         messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
-        return redirect("home")
+        return redirect("botanik_core:home_page")
     
     if not has_delete_permission(request.user):
         if has_delete_approval_required(request.user):
@@ -334,7 +334,7 @@ def collector_delete(request, collector_id):
 
     if not has_permission_to_view(request.user, "Collector"):  # opsiyonel kontrol
         messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
-        return redirect("home")
+        return redirect("botanik_core:home_page")
     
     if not has_delete_permission(request.user):
         if has_delete_approval_required(request.user):
