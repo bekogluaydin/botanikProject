@@ -1,6 +1,8 @@
 from django.http import HttpResponseForbidden
 from functools import wraps
 
+from botanik_core.models import DeletionPermissionChoices, UserPermission
+
 # Sayfaya erişmek için yetki kontrolü yapılıyor. Eğer görme, ekleme yetkisi yoksa uyarı verip belirtilen sayfaya yönlendirme yapıyor.
 def has_permission_to_view(user, table_name):
     if user.is_superuser or user.is_staff:
@@ -18,6 +20,30 @@ def has_permission_to_add(user, table_name):
     if not hasattr(user, "userpermission"):
         return False
     return user.userpermission.can_add_tables.filter(name=table_name).exists()
+
+
+
+# Silme Yetkisi Varmı Kontrol Ediyor
+def has_delete_permission(user):
+    try:
+        return user.userpermission.deletion_permission == DeletionPermissionChoices.YES
+    except UserPermission.DoesNotExist:
+        return False
+
+def has_delete_approval_required(user):
+    try:
+        return user.userpermission.deletion_permission == DeletionPermissionChoices.WITH_APPROVAL
+    except UserPermission.DoesNotExist:
+        return False
+    
+
+
+
+
+
+
+
+
 
 
 

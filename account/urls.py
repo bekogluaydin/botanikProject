@@ -22,9 +22,11 @@ urlpatterns = [
     path("user-permissions/", views.user_permissions_list, name="user_permissions_list"),
     path("user-permissions/create/", views.user_permissions_create, name="user_permissions_create"),
     path('user-permissions/edit/<int:user_permissions_id>', views.user_permissions_edit, name='user_permissions_edit'),
+    path('user-permissions/delete/<int:user_permissions_id>', views.user_permissions_delete, name='user_permissions_delete'),
 
     # Collector
     path("collectors/", views.collector_list, name="collector_list"),
     path("collectors/create/", views.collector_create, name="collector_create"),
     path("collectors/edit/<int:collector_id>/", views.collector_edit, name="collector_edit"),
+    path("collectors/delete/<int:collector_id>/", views.collector_delete, name="collector_delete"),
 ]

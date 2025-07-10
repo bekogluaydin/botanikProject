@@ -28,6 +28,7 @@
                                 <th>Kod</th>
                                 <th>Telefon</th>
                                 <th>E-Posta</th>
+                                <th>Aktif Mi?</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -39,9 +40,10 @@
                                     <td>{{ collector.code }}</td>
                                     <td>{{ collector.phone }}</td>
                                     <td>{{ collector.user.email }}</td>
+                                    <td>{{ collector.is_active }}</td>
                                     <td>
                                         <a href="{% url "account:collector_edit" collector.id %}" class="btn btn-primary btn-sm">Düzenle</a>
-                                        {% comment %} <a href="{% url "account:collector_delete" collector.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a> {% endcomment %}
+                                        <a href="{% url "account:collector_delete" collector.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a>
                                     </td>
                                 </tr>
 

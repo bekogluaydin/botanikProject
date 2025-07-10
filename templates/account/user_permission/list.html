@@ -60,6 +60,7 @@
                                     <td>{{user_permission.is_active}}</td>
                                     <td>
                                         <a href="{% url "account:user_permissions_edit" user_permission.id %}" class="btn btn-primary btn-sm">Düzenle</a>
+                                        <a href="{% url "account:user_permissions_delete" user_permission.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a>
                                     </td>
                                 </tr>
 

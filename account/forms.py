@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 from botanik_core.models import Collector, UserGroup, UserPermission
+from botanik_core.utils.permissions import has_delete_permission
 
 class LoginUserForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -130,6 +131,13 @@ class UserGroupEditForm(forms.ModelForm):
             },
         }
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)  # request parametresi gelecek
+        super().__init__(*args, **kwargs)
+
+        if self.request and not has_delete_permission(self.request.user):
+            self.fields["is_active"].disabled = True
+
 
 
 # User Permission
@@ -202,6 +210,13 @@ class UserPermissionEditForm(forms.ModelForm):
         error_messages = {
             "user_group": {"required": "Kullanıcı grubu seçilmelidir!"},
         }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)  # request parametresi gelecek
+        super().__init__(*args, **kwargs)
+
+        if self.request and not has_delete_permission(self.request.user):
+            self.fields["is_active"].disabled = True
     
     def clean_user(self):
         # Değişikliğe izin verme, her zaman orijinal kullanıcıyı geri döndür
@@ -268,6 +283,13 @@ class CollectorEditForm(forms.ModelForm):
             "user": {"required": "Kullanıcı seçilmelidir!"},
             "code": {"required": "Kullanıcı Kodu boş olamaz!"},
         }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)  # request parametresi gelecek
+        super().__init__(*args, **kwargs)
+
+        if self.request and not has_delete_permission(self.request.user):
+            self.fields["is_active"].disabled = True
 
     def clean_user(self):
         # Kullanıcı alanı disabled olduğu için POST'ta gelmez

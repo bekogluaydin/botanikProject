@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from botanik_core.utils.permissions import has_permission_to_view, has_permission_to_add
+from botanik_core.utils.permissions import has_delete_approval_required, has_delete_permission, has_permission_to_view, has_permission_to_add
 from django.urls import reverse
 
 from account.forms import CollectorCreateForm, CollectorEditForm, CustomUserCreationForm, CustomUserPasswordChangeForm, LoginUserForm, UserGroupCreateForm, UserGroupEditForm, UserPermissionCreateForm, UserPermissionEditForm
@@ -144,13 +144,13 @@ def user_group_edit(request, user_group_id):
     get_user_group = get_object_or_404(UserGroup, pk=user_group_id)
 
     if request.method == "POST":
-        form = UserGroupEditForm(request.POST, instance=get_user_group) # ilk iki parametre formdan gelen, instance parametresi ise DB'den gelen. İkisi karşılaştırılır Formdan gelen hangi alanlarda farklılık varsa sadece onlar için form.save() çalışır. Değişmeyen bilgilerde güncelleme yapılmaz.
+        form = UserGroupEditForm(request.POST, instance=get_user_group, request=request) # ilk iki parametre formdan gelen, instance parametresi ise DB'den gelen. İkisi karşılaştırılır Formdan gelen hangi alanlarda farklılık varsa sadece onlar için form.save() çalışır. Değişmeyen bilgilerde güncelleme yapılmaz.
         
         if form.is_valid():
             form.save()
             return redirect("account:user_group_list")
     else:
-        form = UserGroupEditForm(instance=get_user_group)
+        form = UserGroupEditForm(instance=get_user_group, request=request)
 
     return render(request, "account/user_group/user_group_edit.html", {"form": form})
 
@@ -158,10 +158,22 @@ def user_group_edit(request, user_group_id):
 def user_group_delete(request, user_group_id):
     get_user_group = get_object_or_404(UserGroup, pk=user_group_id)
 
+    if not has_permission_to_view(request.user, "UserGroup"):  # opsiyonel kontrol
+        messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
+        return redirect("home")
+    
+    if not has_delete_permission(request.user):
+        if has_delete_approval_required(request.user):
+            messages.warning(request, "Bu silme işlemi için yönetici onayı gerekmektedir.")
+        else:
+            messages.error(request, "Bu silme işlemi için yetkiniz bulunmamaktadır.")
+        return redirect("account:collector_list")
+
     if request.method == "POST":
         get_user_group.is_active = False
         get_user_group.save()
         
+        messages.add_message(request, messages.SUCCESS, "Kayıt başarıyla pasif hale getirildi.")
         return redirect(reverse('account:user_group_list'))
     
     return render(request, "account/user_group/user_group_delete.html", {
@@ -223,16 +235,43 @@ def user_permissions_edit(request, user_permissions_id):
     get_user_permissions = get_object_or_404(UserPermission, pk=user_permissions_id)
 
     if request.method == "POST":
-        form = UserPermissionEditForm(request.POST, instance=get_user_permissions) # ilk iki parametre formdan gelen, instance parametresi ise DB'den gelen. İkisi karşılaştırılır Formdan gelen hangi alanlarda farklılık varsa sadece onlar için form.save() çalışır. Değişmeyen bilgilerde güncelleme yapılmaz.
+        form = UserPermissionEditForm(request.POST, instance=get_user_permissions, request=request) # ilk iki parametre formdan gelen, instance parametresi ise DB'den gelen. İkisi karşılaştırılır Formdan gelen hangi alanlarda farklılık varsa sadece onlar için form.save() çalışır. Değişmeyen bilgilerde güncelleme yapılmaz.
         
         if form.is_valid():
             form.instance.user = get_user_permissions.user # user alanını tekrar set ediyoruz (her ihtimale karşı)
             form.save()
             return redirect("account:user_permissions_list")
     else:
-        form = UserPermissionEditForm(instance=get_user_permissions)
+        form = UserPermissionEditForm(instance=get_user_permissions, request=request)
 
     return render(request, "account/user_permission/edit.html", {"form": form})
+
+
+@login_required
+def user_permissions_delete(request, user_permissions_id):
+    get_user_permissions = get_object_or_404(UserPermission, pk=user_permissions_id)
+
+    if not has_permission_to_view(request.user, "UserPermission"):  # opsiyonel kontrol
+        messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
+        return redirect("home")
+    
+    if not has_delete_permission(request.user):
+        if has_delete_approval_required(request.user):
+            messages.warning(request, "Bu silme işlemi için yönetici onayı gerekmektedir.")
+        else:
+            messages.error(request, "Bu silme işlemi için yetkiniz bulunmamaktadır.")
+        return redirect("account:user_permissions_list")
+
+    if request.method == "POST":
+        get_user_permissions.is_active = False
+        get_user_permissions.save()
+
+        messages.add_message(request, messages.SUCCESS, "Kayıt başarıyla pasif hale getirildi.")
+        return redirect(reverse('account:user_permissions_list'))
+    
+    return render(request, "account/user_permission/delete.html", {
+        'user_permission': get_user_permissions
+    })
 
 
 # Collector
@@ -268,9 +307,43 @@ def collector_edit(request, collector_id):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
         return render(request, "base.html")
 
-    collector = get_object_or_404(Collector, pk=collector_id)
-    form = CollectorEditForm(request.POST or None, instance=collector)
-    if form.is_valid():
-        form.save()
-        return redirect("account:collector_list")
+    get_collector = get_object_or_404(Collector, pk=collector_id)
+
+    if request.method == "POST":
+        form = CollectorEditForm(request.POST or None, instance=get_collector, request=request)
+        
+        if form.is_valid():
+            form.instance.user = get_collector.user # user alanını tekrar set ediyoruz (her ihtimale karşı)
+            form.save()
+            return redirect("account:collector_list")
+    else:
+        form = CollectorEditForm(instance=get_collector, request=request)
+
     return render(request, "account/collector/edit.html", {"form": form})
+
+
+@login_required
+def collector_delete(request, collector_id):
+    get_collector = get_object_or_404(Collector, pk=collector_id)
+
+    if not has_permission_to_view(request.user, "Collector"):  # opsiyonel kontrol
+        messages.error(request, "Bu işlemi görüntüleme yetkiniz yok.")
+        return redirect("home")
+    
+    if not has_delete_permission(request.user):
+        if has_delete_approval_required(request.user):
+            messages.warning(request, "Bu silme işlemi için yönetici onayı gerekmektedir.")
+        else:
+            messages.error(request, "Bu silme işlemi için yetkiniz bulunmamaktadır.")
+        return redirect("account:collector_list")
+
+    if request.method == "POST":
+        get_collector.is_active = False
+        get_collector.save()
+
+        messages.add_message(request, messages.SUCCESS, "Kayıt başarıyla pasif hale getirildi.")
+        return redirect(reverse('account:collector_list'))
+    
+    return render(request, "account/collector/delete.html", {
+        'collector': get_collector
+    })
