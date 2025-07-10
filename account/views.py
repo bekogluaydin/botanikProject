@@ -107,6 +107,10 @@ def user_logout(request):
 # User Group
 @login_required
 def user_group_list(request):
+    if not has_permission_to_view(request.user, "UserGroup"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
     user_groups_list = UserGroup.objects.all()
     return render(request, "account/user_group/user_group_list.html", {
         "groups": user_groups_list
@@ -115,6 +119,9 @@ def user_group_list(request):
 
 @login_required
 def user_group_create(request):
+    if not has_permission_to_add(request.user, "UserGroup"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
 
     if request.method == "POST":
         form = UserGroupCreateForm(request.POST)
@@ -130,6 +137,10 @@ def user_group_create(request):
 
 @login_required
 def user_group_edit(request, user_group_id):
+    if not has_permission_to_add(request.user, "UserGroup"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
     get_user_group = get_object_or_404(UserGroup, pk=user_group_id)
 
     if request.method == "POST":
@@ -161,6 +172,10 @@ def user_group_delete(request, user_group_id):
 # Table Permission Area
 @login_required
 def table_permission_area_list(request):
+    if not has_permission_to_view(request.user, "TablePermissionArea"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
     table_permission_area_list = TablePermissionArea.objects.all()
     return render(request, "account/table_permission_area/table_permission_area_list.html", {
         "table_permissions": table_permission_area_list
@@ -171,6 +186,10 @@ def table_permission_area_list(request):
 # User Permission
 @login_required
 def user_permissions_list(request):
+    if not has_permission_to_view(request.user, "UserPermission"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+    
     user_permissions_list = UserPermission.objects.all()
     return render(request, "account/user_permission/list.html", {
         "user_permissions": user_permissions_list
@@ -179,6 +198,9 @@ def user_permissions_list(request):
 
 @login_required
 def user_permissions_create(request):
+    if not has_permission_to_add(request.user, "UserPermission"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
 
     if request.method == "POST":
         form = UserPermissionCreateForm(request.POST)
@@ -194,6 +216,10 @@ def user_permissions_create(request):
 
 @login_required
 def user_permissions_edit(request, user_permissions_id):
+    if not has_permission_to_add(request.user, "UserPermission"):
+        messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
+        return render(request, "base.html")
+
     get_user_permissions = get_object_or_404(UserPermission, pk=user_permissions_id)
 
     if request.method == "POST":
