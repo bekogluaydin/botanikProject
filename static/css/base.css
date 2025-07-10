@@ -1,0 +1,22 @@
+/* Basit CSS ile merkeze alma ve biraz stil */
+.container {
+    text-align: center;
+    padding: 50px;
+    margin-top: 50px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+h1 {
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+p {
+    color: #666;
+    font-size: 1.1em;
+    line-height: 1.6;
+}

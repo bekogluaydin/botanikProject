@@ -10,9 +10,8 @@ from botanik_core.models import Collector, TablePermissionArea, UserGroup, UserP
 
 def user_login(request):
     if request.user.is_authenticated:
-        # return redirect("home")  # varsa ana sayfaya yönlendir
-        # return redirect("/admin/")
-        return render(request, "base.html")
+        messages.add_message(request, messages.WARNING, "Zaten giriş yaptınız. Giriş sayfasına ulaşamazsınız.")
+        return redirect("botanik_core:home_page")
 
     
     if request.method == "POST":
@@ -30,9 +29,7 @@ def user_login(request):
 
                 messages.add_message(request, messages.SUCCESS, "Giriş başarılı.")
 
-                return render(request, "base.html")
-                # return redirect("home")
-                # return redirect("/admin/")
+                return redirect("botanik_core:home_page")
             
             else:
                 messages.add_message(request, messages.ERROR, "There was a problem with the login process.")
@@ -48,9 +45,9 @@ def user_login(request):
 
 
 def user_register(request):
-    if request.user.is_authenticated:
-        messages.add_message(request, messages.SUCCESS, "Zaten giriş yaptınız. Kayıt sayfasına ulaşamazsınız.")
-        return render(request, "base.html")
+    if request.user.is_authenticated:    
+        messages.add_message(request, messages.WARNING, "Zaten giriş yaptınız. Kayıt sayfasına ulaşamazsınız.")
+        return redirect("botanik_core:home_page")
    
     elif request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -87,8 +84,7 @@ def user_change_password(request):
 
             messages.add_message(request, messages.SUCCESS, "Şifre Güncellendi.")
 
-            # return redirect("home")
-            return render(request, "base.html")
+            return redirect("botanik_core:home_page")
         
         else:
             messages.add_message(request, messages.WARNING, "Şifre Güncellenmedi.")
@@ -109,7 +105,8 @@ def user_logout(request):
 def user_group_list(request):
     if not has_permission_to_view(request.user, "UserGroup"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     user_groups_list = UserGroup.objects.all()
     return render(request, "account/user_group/user_group_list.html", {
@@ -121,7 +118,8 @@ def user_group_list(request):
 def user_group_create(request):
     if not has_permission_to_add(request.user, "UserGroup"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+
+        return redirect("botanik_core:home_page")
 
     if request.method == "POST":
         form = UserGroupCreateForm(request.POST)
@@ -139,7 +137,8 @@ def user_group_create(request):
 def user_group_edit(request, user_group_id):
     if not has_permission_to_add(request.user, "UserGroup"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     get_user_group = get_object_or_404(UserGroup, pk=user_group_id)
 
@@ -186,7 +185,8 @@ def user_group_delete(request, user_group_id):
 def table_permission_area_list(request):
     if not has_permission_to_view(request.user, "TablePermissionArea"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     table_permission_area_list = TablePermissionArea.objects.all()
     return render(request, "account/table_permission_area/table_permission_area_list.html", {
@@ -200,7 +200,8 @@ def table_permission_area_list(request):
 def user_permissions_list(request):
     if not has_permission_to_view(request.user, "UserPermission"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
     
     user_permissions_list = UserPermission.objects.all()
     return render(request, "account/user_permission/list.html", {
@@ -212,7 +213,8 @@ def user_permissions_list(request):
 def user_permissions_create(request):
     if not has_permission_to_add(request.user, "UserPermission"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     if request.method == "POST":
         form = UserPermissionCreateForm(request.POST)
@@ -230,7 +232,8 @@ def user_permissions_create(request):
 def user_permissions_edit(request, user_permissions_id):
     if not has_permission_to_add(request.user, "UserPermission"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     get_user_permissions = get_object_or_404(UserPermission, pk=user_permissions_id)
 
@@ -279,7 +282,8 @@ def user_permissions_delete(request, user_permissions_id):
 def collector_list(request):
     if not has_permission_to_view(request.user, "Collector"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     collectors = Collector.objects.all()
     return render(request, "account/collector/list.html", {"collectors": collectors})
@@ -289,7 +293,8 @@ def collector_list(request):
 def collector_create(request):
     if not has_permission_to_add(request.user, "Collector"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     if request.method == "POST":
         form = CollectorCreateForm(request.POST)
@@ -305,7 +310,8 @@ def collector_create(request):
 def collector_edit(request, collector_id):
     if not has_permission_to_add(request.user, "Collector"):
         messages.add_message(request, messages.ERROR, "Bu sayfaya erişim yetkiniz bulunmamaktadır. Ana Sayfaya yönlendirildiniz.")
-        return render(request, "base.html")
+        
+        return redirect("botanik_core:home_page")
 
     get_collector = get_object_or_404(Collector, pk=collector_id)
 

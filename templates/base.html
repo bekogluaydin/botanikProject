@@ -24,7 +24,16 @@
 
     <main>
         <!--content-->
-        {% block content %}{% endblock content %}
+        {% block content %}
+            
+            <div class="container">
+                <h1>Hoş Geldiniz!</h1>
+                <p>Bu, projenizin ana sayfasıdır. Temel bilgilere buradan ulaşabilirsiniz.</p>
+                <p>Yanlış bir işlem yaptığınızda veya yetkiniz olmayan bir yere erişmeye çalıştığınızda buraya yönlendirileceksiniz.</p>
+                <p>Anasayfanızı daha fazla içerik ve özellik ile kişiselleştirebilirsiniz.</p>
+            </div>
+
+        {% endblock content %}
 
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
