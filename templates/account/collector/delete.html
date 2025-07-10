@@ -1,0 +1,39 @@
+{% extends "account/base_account.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Toplayıcılar Defteri
+{% endblock page_title %}   
+
+{% block content %}
+    <div class="container mt-3">
+        <h1>Toplayıcılar Defteri</h1>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <p>
+                        <strong>{{collector.user.get_full_name|default:collector.user.username}} Toplayıcısını silmek istiyor musun (Soft Delete)?</strong>
+
+                        <form action="" method="POST"> 
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Evet</button>
+                            <a href="{% url "account:collector_list" %}" class="btn btn-danger">Hayır</a>
+                        </form>
+                    </p>
+
+                </div>
+            
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}

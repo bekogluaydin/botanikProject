@@ -1,0 +1,39 @@
+{% extends "account/base_account.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Kullanıcı Yetkileri Listesi
+{% endblock page_title %}   
+
+{% block content %}
+    <div class="container mt-3">
+        <h1>Kullanıcı Yetkileri Listesi</h1>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <p>
+                        <strong>{{user_permission.user.get_full_name|default:user_permission.user.username}} Kullanıcı yetkisini silmek istiyor musun (Soft Delete)?</strong>
+
+                        <form action="" method="POST"> 
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Evet</button>
+                            <a href="{% url "account:user_permissions_list" %}" class="btn btn-danger">Hayır</a>
+                        </form>
+                    </p>
+
+                </div>
+            
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}

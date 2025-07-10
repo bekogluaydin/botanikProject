@@ -1,0 +1,110 @@
+ <!-- Static dosyalar için => load static -->
+ {% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static '/css/_nav.css' %}">
+{% endblock css_files %}
+
+{% load permission_tags %}
+
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <div class="container">
+        <a href="/" class="navbar-brand">Botanik Yönetim Sistemi</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>        
+
+        <div class="collapse navbar-collapse" id="main_navbar">
+
+            <ul class="navbar-nav me-auto">
+
+                
+                    <ul class="dropdown">
+                        <li>
+                            <button class="dropbtn">Yetki İşlemleri</button>
+                            <ul class="dropdown-content">
+
+                            {% if user|can_view_table:"TablePermissionArea" %}
+                                <li><a href="{% url 'account:table_permission_area_list' %}">Tablo izin Alanı</a></li>
+                            {% endif %}
+                            
+
+                            {% if user|can_view_table:"UserGroup" %}
+                                <li><a href="{% url 'account:user_group_list' %}">Kullanıcı Grupları</a></li>
+                            {% endif %}
+
+
+                            {% if user|can_view_table:"UserPermission" %}
+                                <li><a href="{% url 'account:user_permissions_list' %}">Kullanıcı Yetkileri</a></li>
+                            {% endif %}
+
+
+                            {% if user|can_view_table:"Collector" %}
+                                <li><a href="{% url 'account:collector_list' %}">Toplayıcılar Defteri</a></li>
+                            {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+
+                    {% comment %} <li class="nav-item">
+                        <a href="{% url "list_course" %}" class="nav-link {% if request.resolver_match.url_name == 'list_course' %}active{% endif %}">Admin Course List</a>
+                    </li> {% endcomment %}
+                
+
+
+                {% comment %} <li class="nav-item">
+                    <a href="{% url "course_list" %}" class="nav-link {% if request.path == '/course/' or 'course/category' in request.path %}active{% endif %}">Courses</a>
+                </li> {% endcomment %}
+
+
+                {% comment %} <li class="nav-item">
+                    <a href="{% url "contact" %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                </li> {% endcomment %}
+
+                {% comment %} <li class="nav-item">
+                    <a href="{% url "about" %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+                </li> {% endcomment %}
+
+            </ul>
+
+            <ul class="navbar-nav me-0">
+
+                {% if not user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a href="{% url "account:user_login" %}" class="nav-link {% if request.resolver_match.url_name == 'user_login' %}active{% endif %}">Giriş Yap</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{% url "account:user_register" %}" class="nav-link {% if request.resolver_match.url_name == 'user_register' %}active{% endif %}">Kayıt Ol</a>
+                    </li>
+                
+                {% elif  user.is_authenticated %}
+
+                    <li class="nav-item">
+                       <a href="#" class="nav-link bi bi-person text-white">Hoş geldin, {{user.get_full_name}} - ({{user.username}})</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url "account:user_change_password" %}" class="nav-link">Şifre Değiştir</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{% url "account:user_logout" %}" class="nav-link">Çıkış Yap</a>
+                    </li>
+                
+                {% endif %}
+                
+            </ul>    
+
+            {% comment %} <form action="{% url "search" %}" class="d-flex"> {% endcomment %}
+                {% comment %} https://getbootstrap.com/docs/4.0/components/navbar/#forms {% endcomment %}
+                {% comment %} <input type="text" class="form-control me-1" name="q" placeholder="Search a Word">
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form> {% endcomment %}
+
+        </div>   
+        
+    </div>
+</nav>

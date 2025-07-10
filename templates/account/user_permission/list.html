@@ -1,0 +1,79 @@
+{% extends "account/base_account.html" %}
+
+<!-- Static dosyalar için => load static -->
+{% load static %}
+
+{% block css_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki CSS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock css_files %}
+
+{% block page_title %}
+    Kullanıcı Yetkileri Listesi
+{% endblock page_title %}   
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Kullanıcı Yetkileri</h1>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <a href="{% url 'account:user_permissions_create' %}">+ Yeni Yetki Ver</a>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı Adı</th>
+                                <th>Görebileceği Tablolar</th>
+                                <th>Kayıt Yapabileceği Tablolar</th>
+                                <th>Kayıt Silebilme</th>
+                                <th>Kullanıcı Grubu</th>
+                                <th>Aktif Mi?</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user_permission in user_permissions  %}
+
+                            <tr>
+                                    <td>{{user_permission.user.get_full_name|default:user_permission.user.username}}</td>
+
+                                    <td>
+                                        {% for table in user_permission.can_view_tables.all %}
+                                            {{table.name}}{% if not forloop.last %},{% endif %}
+                                            {% empty %}
+                                                -
+                                        {% endfor %}
+                                    </td>
+
+                                    <td>
+                                        {% for table in user_permission.can_add_tables.all %}
+                                            {{table.name}}{% if not forloop.last %},{% endif %}
+                                            {% empty %}
+                                                -
+                                        {% endfor %}
+                                    </td>
+
+                                    <td>{{user_permission.get_deletion_permission_display}}</td>
+                                    <td>{{user_permission.user_group.name}}</td>
+                                    <td>{{user_permission.is_active}}</td>
+                                    <td>
+                                        <a href="{% url "account:user_permissions_edit" user_permission.id %}" class="btn btn-primary btn-sm">Düzenle</a>
+                                        <a href="{% url "account:user_permissions_delete" user_permission.id %}" class="btn btn-danger btn-sm">Sil (Soft Delete)</a>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    {{ block.super }} {% comment %} extende edilen sayfadaki JS dosyalarını bu sayfaya getirmek için {% endcomment %}
+{% endblock js_files %}
